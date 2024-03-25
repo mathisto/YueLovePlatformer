@@ -1,6 +1,6 @@
 export class Player
   new: =>
-    @pos = {x: 950, y: 855}
+    @pos = {x: 950, y: 1855}
 
 
   -- update: (dt)=>
