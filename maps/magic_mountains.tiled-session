@@ -1,0 +1,41 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "magic_mountains.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "Magic Mountains.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
+        },
+        "magic_mountains.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1027.5,
+                "y": 609.5
+            }
+        },
+        "magic_mountains.tmx#Magic Mountains": {
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "/Users/mathisto/cloud/code/yue/grit/maps",
+    "last.imagePath": "/Users/mathisto/cloud/code/yue/grit/assets/sprites",
+    "map.height": 34,
+    "map.lastUsedExportFilter": "Lua files (*.lua)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 60,
+    "openFiles": [
+        "magic_mountains.tmx"
+    ],
+    "project": "magic_mountains.tiled-project",
+    "recentFiles": [
+        "magic_mountains.tmx",
+        "Magic Mountains.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

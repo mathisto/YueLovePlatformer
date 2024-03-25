@@ -8,6 +8,7 @@
 
 import "lib.lume" as L
 import "lib.tiny" as Tiny
+import "lib.sti" as Sti
 
 export class Game
   new: =>
@@ -26,6 +27,11 @@ export class Game
      @bg_img_sea\setWrap("repeat", "repeat")
      @bg_quad_sea = lg.newQuad(0, 0, 1920, 1080, @bg_img_sea\getWidth!, @bg_img_sea\getHeight!)
 
+     @bg_img_far_grounds = lg.newImage "assets/sprites/far_grounds.png"
+     @bg_quad_far_grounds = lg.newQuad(0, 0, 1920, 1080, @bg_img_far_grounds\getWidth!, @bg_img_far_grounds\getHeight!)
+
+     @gameMap = Sti("maps/magic_mountains.lua")
+
   update: (dt)=>
     @iTime += dt
 
@@ -33,6 +39,8 @@ export class Game
     lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 2, 2)
     lg.draw(@bg_img_clouds, @bg_quad_clouds, 0, 150, 0, 4, 4)
     lg.draw(@bg_img_sea, @bg_quad_sea, 0, 700, 0, 4, 4)
+    lg.draw(@bg_img_far_grounds, @bg_quad_far_grounds, 200, 775, 0, 2, 2)
+    @gameMap\draw!
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)
     lg.print("Current FPS: " .. tostring(lt.getFPS!), 5, 45)
     lg.print("Time Elapsed: " .. L.round(@iTime, 0.001), 5, 85)
