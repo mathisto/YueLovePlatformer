@@ -9,11 +9,16 @@
 import "lib.lume" as L
 import "lib.tiny" as Tiny
 import "lib.sti" as Sti
+import "lib.anim8" as Anim8
+import "lib.camera" as Cam
+
+import "src.player"
 
 export class Game
   new: =>
      @iTime = 0
      @iResolution, _ = lw.getMode! -- Discard table, keep resolution
+     @player = player.Player!
 
      @bg_img_sky = lg.newImage "assets/sprites/sky.png"
      @bg_img_sky\setWrap("repeat", "repeat")
@@ -32,15 +37,32 @@ export class Game
 
      @gameMap = Sti("maps/magic_mountains.lua")
 
+     @player_spritesheet = lg.newImage("assets/sprites/player/sheet.png")
+     grid = Anim8.newGrid(50, 37, @player_spritesheet\getWidth!, @player_spritesheet\getHeight!)
+     @player_animation = Anim8.newAnimation(grid("4-7", 6), 0.2)
+
+     @camera = Cam(@player.pos.x, @player.pos.y, 5)
+     @camera\
+
   update: (dt)=>
     @iTime += dt
+    @player_animation\update(dt)
+    dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
+    @camera\move(dx / 2, dy / 2)
 
   draw: (dt, iTime)=>
+    @camera\attach!
+
     lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 2, 2)
     lg.draw(@bg_img_clouds, @bg_quad_clouds, 0, 150, 0, 4, 4)
     lg.draw(@bg_img_sea, @bg_quad_sea, 0, 700, 0, 4, 4)
     lg.draw(@bg_img_far_grounds, @bg_quad_far_grounds, 200, 775, 0, 2, 2)
+
     @gameMap\draw!
+    @player_animation\draw(@player_spritesheet, @player.pos.x, @player.pos.y, 0, 1, 1)
+
+    @camera\detach!
+
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)
     lg.print("Current FPS: " .. tostring(lt.getFPS!), 5, 45)
     lg.print("Time Elapsed: " .. L.round(@iTime, 0.001), 5, 85)
