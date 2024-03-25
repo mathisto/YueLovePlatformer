@@ -16,16 +16,23 @@ export class Game
 
      @bg_img_sky = lg.newImage "assets/sprites/sky.png"
      @bg_img_sky\setWrap("repeat", "repeat")
-     -- N.B. The quad's width and height are larger than the image's width and height.
      @bg_quad_sky = lg.newQuad(0, 0, 1920, 1080, @bg_img_sky\getWidth!, @bg_img_sky\getHeight!)
 
      @bg_img_clouds = lg.newImage "assets/sprites/clouds.png"
+     @bg_img_clouds\setWrap("repeat", "repeat")
+     @bg_quad_clouds = lg.newQuad(0, 0, 1920, 1080, @bg_img_clouds\getWidth!, @bg_img_clouds\getHeight!)
+
+     @bg_img_sea = lg.newImage "assets/sprites/sea.png"
+     @bg_img_sea\setWrap("repeat", "repeat")
+     @bg_quad_sea = lg.newQuad(0, 0, 1920, 1080, @bg_img_sea\getWidth!, @bg_img_sea\getHeight!)
 
   update: (dt)=>
     @iTime += dt
 
   draw: (dt, iTime)=>
-    lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 4, 4)
+    lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 2, 2)
+    lg.draw(@bg_img_clouds, @bg_quad_clouds, 0, 150, 0, 4, 4)
+    lg.draw(@bg_img_sea, @bg_quad_sea, 0, 700, 0, 4, 4)
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)
     lg.print("Current FPS: " .. tostring(lt.getFPS!), 5, 45)
     lg.print("Time Elapsed: " .. L.round(@iTime, 0.001), 5, 85)
