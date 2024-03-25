@@ -7,18 +7,25 @@
   window: lw } = love
 
 import "lib.lume" as L
+import "lib.tiny" as Tiny
 
 export class Game
   new: =>
      @iTime = 0
      @iResolution, _ = lw.getMode! -- Discard table, keep resolution
-     @bg = lg.newImage "assets/sprites/background.jpg"
+
+     @bg_img_sky = lg.newImage "assets/sprites/sky.png"
+     @bg_img_sky\setWrap("repeat", "repeat")
+     -- N.B. The quad's width and height are larger than the image's width and height.
+     @bg_quad_sky = lg.newQuad(0, 0, 1920, 1080, @bg_img_sky\getWidth!, @bg_img_sky\getHeight!)
+
+     @bg_img_clouds = lg.newImage "assets/sprites/clouds.png"
 
   update: (dt)=>
     @iTime += dt
 
   draw: (dt, iTime)=>
-    lg.draw(@bg, 0, 0)
+    lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 4, 4)
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)
     lg.print("Current FPS: " .. tostring(lt.getFPS!), 5, 45)
     lg.print("Time Elapsed: " .. L.round(@iTime, 0.001), 5, 85)
