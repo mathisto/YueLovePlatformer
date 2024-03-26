@@ -1,0 +1,7 @@
+{ audio: la } = love
+
+export class BGM
+  new: =>
+    @music = la.newSource("assets/music/MagicCliffs.ogg", "stream")
+    @music\setLooping true
+    @music\play!

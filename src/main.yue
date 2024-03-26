@@ -13,8 +13,7 @@ love.load = ->
   global my_game = game.Game!
 
 love.keypressed = (k, scan_code, is_repeat)->
-  if k == 'q' then le.push 'quit'
-  if k == 'r' then le.quit 'restart'
+  my_game\keypressed(k, scan_code, is_repeat)
 
 love.update = (dt)->
   my_game\update(dt)

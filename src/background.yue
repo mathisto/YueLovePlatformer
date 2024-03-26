@@ -1,0 +1,24 @@
+{ graphics: lg } = love
+
+export class Background
+  new: =>
+    @img_sky = lg.newImage "assets/sprites/sky.png"
+    @img_sky\setWrap "repeat", "repeat"
+    @quad_sky = lg.newQuad(0, 0, 1920, 1080, @img_sky\getWidth!, @img_sky\getHeight!)
+
+    @img_clouds = lg.newImage "assets/sprites/clouds.png"
+    @img_clouds\setWrap "repeat", "repeat"
+    @quad_clouds = lg.newQuad(0, 0, 1920, 1080, @img_clouds\getWidth!, @img_clouds\getHeight!)
+
+    @img_sea = lg.newImage "assets/sprites/sea.png"
+    @img_sea\setWrap "repeat", "repeat"
+    @quad_sea = lg.newQuad(0, 0, 1920, 1080, @img_sea\getWidth!, @img_sea\getHeight!)
+
+    @img_far_grounds = lg.newImage "assets/sprites/far_grounds.png"
+    @quad_far_grounds = lg.newQuad(0, 0, 1920, 1080, @img_far_grounds\getWidth!, @img_far_grounds\getHeight!)
+
+  draw: =>
+    lg.draw(@img_sky, @quad_sky, 0, 0, 0, 2, 2)
+    lg.draw(@img_clouds, @quad_clouds, 0, 150, 0, 4, 4)
+    lg.draw(@img_sea, @quad_sea, 0, 700, 0, 4, 4)
+    lg.draw(@img_far_grounds, @quad_far_grounds, 200, 875, 0, 2, 2)

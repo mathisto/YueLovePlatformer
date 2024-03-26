@@ -1,17 +1,12 @@
-{ graphics: lg,
-  keyboard: lk,
-  mouse: lm,
-  audio: la,
-  event: le,
-  timer: lt,
-  window: lw } = love
+{ graphics: lg, keyboard: lk, mouse: lm, audio: la, event: le, timer: lt, window: lw } = love
 
 import "lib.lume" as L
 import "lib.tiny" as Tiny
 import "lib.sti" as Sti
-import "lib.anim8" as Anim8
 import "lib.camera" as Cam
 
+import "src.bgm"
+import "src.background"
 import "src.player"
 
 export class Game
@@ -19,56 +14,32 @@ export class Game
      @iTime = 0
      @iResolution, _ = lw.getMode! -- Discard table, keep resolution
 
-     @background_music = la.newSource("assets/music/MagicCliffs.ogg", "stream")
-     @background_music\setLooping true
-     @background_music\play!
-
      @player = player.Player!
-
-     @bg_img_sky = lg.newImage "assets/sprites/sky.png"
-     @bg_img_sky\setWrap("repeat", "repeat")
-     @bg_quad_sky = lg.newQuad(0, 0, 1920, 1080, @bg_img_sky\getWidth!, @bg_img_sky\getHeight!)
-
-     @bg_img_clouds = lg.newImage "assets/sprites/clouds.png"
-     @bg_img_clouds\setWrap("repeat", "repeat")
-     @bg_quad_clouds = lg.newQuad(0, 0, 1920, 1080, @bg_img_clouds\getWidth!, @bg_img_clouds\getHeight!)
-
-     @bg_img_sea = lg.newImage "assets/sprites/sea.png"
-     @bg_img_sea\setWrap("repeat", "repeat")
-     @bg_quad_sea = lg.newQuad(0, 0, 1920, 1080, @bg_img_sea\getWidth!, @bg_img_sea\getHeight!)
-
-     @bg_img_far_grounds = lg.newImage "assets/sprites/far_grounds.png"
-     @bg_quad_far_grounds = lg.newQuad(0, 0, 1920, 1080, @bg_img_far_grounds\getWidth!, @bg_img_far_grounds\getHeight!)
-
+     @bg = background.Background!
+     @bgm = bgm.BGM!
      @gameMap = Sti("maps/magic_mountains.lua")
-
-     @player_spritesheet = lg.newImage("assets/sprites/player/sheet.png")
-     grid = Anim8.newGrid(50, 37, @player_spritesheet\getWidth!, @player_spritesheet\getHeight!, 0, 0)
-     @player_animation = Anim8.newAnimation(grid("4-7", 6), 0.2)
-
      @camera = Cam(@player.pos.x, @player.pos.y, 3)
-     @camera\
+
+  keypressed: (k, scan_code, is_repeat)=>
+    if k == 'q' then le.push 'quit'
+    if k == 'r' then le.quit 'restart'
+    @player\keypressed(k, scan_code, is_repeat)
 
   update: (dt)=>
     @iTime += dt
-    @player_animation\update(dt)
+    @player.animations.idle\update(dt)
     @camera\lockX(@player.pos.x, Cam.smooth.linear(25))
     @camera\lockY(@player.pos.y, Cam.smooth.linear(25))
-    @camera\lookAt(@player.pos.x, @player.pos.y)
-    @tx = @camera.x - lg\getWidth! / 2
-    @ty = @camera.x - lg\getHeight! / 2
+    -- @camera\lookAt(@player.pos.x, @player.pos.y)
     -- dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
     -- @camera\move(dx / 2, dy / 2)
 
   draw: (dt, iTime)=>
-    lg.draw(@bg_img_sky, @bg_quad_sky, 0, 0, 0, 2, 2)
-    lg.draw(@bg_img_clouds, @bg_quad_clouds, 0, 150, 0, 4, 4)
-    lg.draw(@bg_img_sea, @bg_quad_sea, 0, 700, 0, 4, 4)
-    lg.draw(@bg_img_far_grounds, @bg_quad_far_grounds, 200, 875, 0, 2, 2)
+    @bg\draw!
 
     @camera\attach!
     @gameMap\drawLayer(@gameMap.layers["Platforms"])
-    @player_animation\draw(@player_spritesheet, @player.pos.x, @player.pos.y, 0, 1, 1)
+    @player.animations.idle\draw(@player.spritesheet, @player.pos.x, @player.pos.y, 0, 1, 1)
     @camera\detach!
 
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)

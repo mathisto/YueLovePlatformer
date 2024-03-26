@@ -1,6 +1,25 @@
+{ graphics: lg } = love
+
+import "lib.anim8" as Anim8
+
 export class Player
   new: =>
     @pos = {x: 950, y: 892}
+    @spritesheet = lg.newImage("assets/sprites/player/sheet.png")
+    grid = Anim8.newGrid(50, 37, @spritesheet\getWidth!, @spritesheet\getHeight!, 0, 0)
+    @animations =
+      idle: Anim8.newAnimation(grid("4-7", 6), 0.2)
+      walk: Anim8.newAnimation(grid("2-7", 2), 0.1)
+
+  goLeft: =>
+    @pos.x -= 20
+
+  goRight: =>
+    @pos.x += 20
+
+  keypressed: (k, scan_code, is_repeat)=>
+    if k == 'a' then @goLeft!
+    if k == 'd' then @goRight!
 
 
   -- update: (dt)=>
