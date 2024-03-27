@@ -1,40 +1,46 @@
 { graphics: lg, keyboard: lk } = love
 
 import "lib.anim8" as Anim8
+import "lib.windfield"
 
 export class Player
   new: (world)=>
     @pos = {x: 950, y: 892}
-    @dx, @dy = 0, 0
+    -- @pos = {x: 950, y: 892}
     @spritesheet = lg.newImage("assets/sprites/player/sheet.png")
     @grid_size = {x: 50, y: 37}
     grid = Anim8.newGrid(@grid_size.x, @grid_size.y, @spritesheet\getWidth!, @spritesheet\getHeight!, 0, 0)
-    -- @collider = world.newRectangleCollider(@pos.x, @pos.y, @grid_size.x, @grid_size.y)
+
+    @collider = world\newBSGRectangleCollider(@pos.x, @pos.y, @grid_size.y / 1.5, @grid_size.x / 1.5, 5)
+    @collider\setFixedRotation true
+
     @animations =
       idle: Anim8.newAnimation(grid("4-7", 6), 0.1)
-      walk: Anim8.newAnimation(grid("2-7", 2), 0.2)
+      walk_right: Anim8.newAnimation(grid("2-7", 2), 0.1)
+      walk_left: Anim8.newAnimation(grid("2-7", 2), 0.1)\flipH!
+      jump: Anim8.newAnimation(grid("2-7", 5, "1-3", 6), 0.1)
     @animation = @animations.idle
-    @speed = 3
-    @left_or_right = 1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally. Default to right.
+    @speed = 10
+    @max_speed = 80
 
   goLeft: =>
-    @animation = @animations.walk
-    @pos.x -= @speed
-    @dx = speed
-    @left_or_right = -1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally
+    @animation = @animations.walk_left
+    @collider\applyLinearImpulse(-@speed, 0) unless @collider\getLinearVelocity! <= -@max_speed
 
   goRight: =>
-    @animation = @animations.walk
-    @pos.x += @speed
-    @dx = speed
-    @left_or_right = 1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally
+    @animation = @animations.walk_right
+    @collider\applyLinearImpulse(@speed, 0) unless @collider\getLinearVelocity! <= -@max_speed
+
+  jump: =>
+    @animation = @animations.jump
+    @collider\applyLinearImpulse(0, -10) unless @collider\getLinearVelocity! <= -@max_speed
 
   update: (dt)=>
-    @dx = 0 -- reset frame position delta
     if lk.isDown('a') then @goLeft!
     if lk.isDown('d') then @goRight!
-    if @dx == 0 then @animation = @animations.idle
+    if lk.isDown('w') then @jump!
+    @animation = @animations.idle if @collider\getLinearVelocity == 0
     @animation\update(dt)
 
   draw: =>
-    @animation\draw(@spritesheet, @pos.x, @pos.y, 0, @left_or_right, 1)
+    @animation\draw(@spritesheet, @pos.x, @pos.y, 0, 1, 1, 24, 19)

@@ -14,7 +14,9 @@ export class Game
   new: =>
      @iTime = 0
      @iResolution, _ = lw.getMode! -- Discard table, keep resolution
-     @world = windfield.newWorld!
+     @world = windfield.newWorld(0, 100)
+     @ground = @world\newRectangleCollider(0, 929, 1920, 10)
+     @ground\setType("static")
 
      @player = player.Player(@world)
      @bg = background.Background!
@@ -31,6 +33,8 @@ export class Game
     @iTime += dt
     @player\update(dt)
     @world\update(dt)
+    @player.pos.x, @player.pos.y = @player.collider\getX!, @player.collider\getY!
+
     dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
     @camera\move(dx / 2, dy / 2)
 
