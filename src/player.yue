@@ -12,28 +12,29 @@ export class Player
     -- @collider = world.newRectangleCollider(@pos.x, @pos.y, @grid_size.x, @grid_size.y)
     @animations =
       idle: Anim8.newAnimation(grid("4-7", 6), 0.1)
-      walk: Anim8.newAnimation(grid("2-6", 2), 0.1)
+      walk: Anim8.newAnimation(grid("2-7", 2), 0.2)
     @animation = @animations.idle
     @speed = 3
     @left_or_right = 1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally. Default to right.
 
   goLeft: =>
+    @animation = @animations.walk
     @pos.x -= @speed
     @dx = speed
-    @animation = @animations.walk
     @left_or_right = -1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally
 
   goRight: =>
+    @animation = @animations.walk
     @pos.x += @speed
     @dx = speed
-    @animation = @animations.walk
     @left_or_right = 1 -- Used in sx arg to anim.draw. A scale of -1 flips the animation horizaontally
 
-  update: =>
+  update: (dt)=>
     @dx = 0 -- reset frame position delta
     if lk.isDown('a') then @goLeft!
     if lk.isDown('d') then @goRight!
     if @dx == 0 then @animation = @animations.idle
+    @animation\update(dt)
 
   draw: =>
     @animation\draw(@spritesheet, @pos.x, @pos.y, 0, @left_or_right, 1)

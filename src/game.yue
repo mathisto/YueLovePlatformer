@@ -29,9 +29,8 @@ export class Game
 
   update: (dt)=>
     @iTime += dt
-    @player\update!
+    @player\update(dt)
     @world\update(dt)
-    @player.animations.idle\update(dt)
     dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
     @camera\move(dx / 2, dy / 2)
 
