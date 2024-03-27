@@ -4,6 +4,7 @@ import "lib.lume" as L
 import "lib.tiny" as Tiny
 import "lib.sti" as Sti
 import "lib.camera" as Cam
+import "lib.windfield"
 
 import "src.bgm"
 import "src.background"
@@ -13,8 +14,9 @@ export class Game
   new: =>
      @iTime = 0
      @iResolution, _ = lw.getMode! -- Discard table, keep resolution
+     @world = windfield.newWorld!
 
-     @player = player.Player!
+     @player = player.Player(@world)
      @bg = background.Background!
      @bgm = bgm.BGM!
      @gameMap = Sti("maps/magic_mountains.lua")
@@ -23,23 +25,23 @@ export class Game
   keypressed: (k, scan_code, is_repeat)=>
     if k == 'q' then le.push 'quit'
     if k == 'r' then le.quit 'restart'
-    @player\keypressed(k, scan_code, is_repeat)
+    -- @player\keypressed(k, scan_code, is_repeat)
 
   update: (dt)=>
     @iTime += dt
+    @player\update!
+    @world\update(dt)
     @player.animations.idle\update(dt)
-    @camera\lockX(@player.pos.x, Cam.smooth.linear(25))
-    @camera\lockY(@player.pos.y, Cam.smooth.linear(25))
-    -- @camera\lookAt(@player.pos.x, @player.pos.y)
-    -- dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
-    -- @camera\move(dx / 2, dy / 2)
+    dx, dy = @player.pos.x - @camera.x, @player.pos.y - @camera.y
+    @camera\move(dx / 2, dy / 2)
 
   draw: (dt, iTime)=>
     @bg\draw!
 
     @camera\attach!
     @gameMap\drawLayer(@gameMap.layers["Platforms"])
-    @player.animations.idle\draw(@player.spritesheet, @player.pos.x, @player.pos.y, 0, 1, 1)
+    @player\draw!
+    @world\draw!
     @camera\detach!
 
     lg.print("mouse_x: " .. lm.getX! .. " - mouse_y: " .. lm.getY!, 5, 5)
